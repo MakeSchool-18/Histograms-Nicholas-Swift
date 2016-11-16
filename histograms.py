@@ -9,6 +9,7 @@ class Dictogram(dict):
     def __init__(self, iterable=None):
         """Initialize this histogram as a new dict; update with given items"""
         super(Dictogram, self).__init__()
+
         self.types = 0  # the number of distinct item types in this histogram
         self.tokens = 0  # the total count of all item tokens in this histogram
         if iterable:
@@ -16,13 +17,22 @@ class Dictogram(dict):
 
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
+
         for item in iterable:
-            # TODO: increment item count
-            pass
+            # increment item count
+            if item in self:
+                self[item] += 1
+            else:
+                self.types += 1
+                self[item] = 1
+            self.tokens += 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        # TODO: retrieve item count
+        if item in self.keys():
+            return self[item]
+        else:
+            return 0
         pass
 
 
@@ -38,24 +48,39 @@ class Listogram(list):
 
     def update(self, iterable):
         """Update this histogram with the items in the given iterable"""
+        temp_dict = dict(self)
         for item in iterable:
-            # TODO: increment item count
-            pass
+            # increment item count
+            if item in temp_dict.keys():
+                temp_dict[item] += 1
+            else:
+                self.types += 1
+                temp_dict[item] = 1
+            self.tokens += 1
+        self[:] = []
+        for item in temp_dict.items():
+            self.append(item)
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
-        # TODO: retrieve item count
-        pass
+        for tuples in self:
+            if item == tuples[0]:
+                return tuples[1]
+        return 0
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
-        # TODO: check if item is in histogram
-        pass
+        for tuples in self:
+            if item == tuples[0]:
+                return True
+        return False
 
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
         # TODO: implement linear search to find an item's index
-        pass
+        for i in range(0, len(self)-1):
+            if target == self[i][0]:
+                return i
 
 
 def test_histogram(text_list):
